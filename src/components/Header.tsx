@@ -9,16 +9,18 @@ export default function Header() {
     const isLanding = pathname === "/";
 
     const handleLogin = () => {
+        // TODO: Login api
         router.push("/dashboard");
     };
 
     const handleLogout = () => {
+        // TODO: Logout api
         router.push("/");
     }
 
     return (
         <header
-            className={`h-18 flex items-center justify-between px-8 py-4 transition-colors duration-300 ${isLanding
+            className={`h-16 flex items-center justify-between px-8 py-4 transition-colors duration-300 ${isLanding
                 ? "text-gray-50 fixed top-0 left-0 w-full z-50 "
                 : "border-b-2 border-indigo-100 text-slate-800 bg-gray-50"
                 }`}
