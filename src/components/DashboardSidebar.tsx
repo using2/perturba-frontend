@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { BiUpload, BiImageAlt, BiBookAlt, BiPulse } from "react-icons/bi";
 
 const sidebarMenu = [
-    { label: "파일 업로드 하기", href: "/dashboard/image-transform", icon: <BiUpload size={22} /> },
+    { label: "파일 업로드 하기", href: "/dashboard/image-upload", icon: <BiUpload size={22} /> },
     { label: "이미지 목록", href: "/dashboard/list", icon: <BiImageAlt size={22} /> },
     { label: "API Docs", href: "/dashboard/api-docs", icon: <BiBookAlt size={22} /> },
     { label: "서비스 성능 보기", href: "/dashboard/performance", icon: <BiPulse size={22} /> }
