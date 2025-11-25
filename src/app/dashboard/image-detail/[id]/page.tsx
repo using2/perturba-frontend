@@ -110,8 +110,8 @@ export default function ResponsiveImageDetailPage() {
                 </div>
             </div>
 
-            <div className="px-4 md:px-8 py-4 md:py-6 bg-white border-t border-gray-200 md:bg-gray-50 md:border-t-0">
-                <div className="flex flex-col items-center md:items-end gap-3 md:gap-4 max-w-2xl md:ml-auto md:mr-8">
+            <div className="flex justify-center md:justify-end px-4 md:px-8 py-4 md:py-6 bg-white border-t border-gray-200 md:bg-gray-50 md:border-t-0">
+                <div className="flex flex-col items-center gap-3 md:gap-4 max-w-2xl md:ml-auto md:mr-4">
                     <button
                         className="text-gray-700 text-sm font-medium border-b border-gray-400 pb-1 md:hover:text-blue-600 transition"
                         onClick={() => { setShowStatus(true) }}
