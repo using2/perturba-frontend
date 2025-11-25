@@ -14,7 +14,7 @@ interface TransformStatusModalProps {
 
 const TransformStatusModal: React.FC<TransformStatusModalProps> = ({ files }) => {
     return (
-        <div className="absolute right-0 top-full mt-2 min-w-[320px] rounded-2xl shadow-[0px_7px_29px_0px_rgba(100,100,111,0.20)] outline outline-2 outline-offset-[-2px] outline-blue-100 flex flex-col items-start bg-white z-50">
+        <div className="absolute right-0 top-full mt-2 mr-4 md:mr-16 min-w-[320px] rounded-2xl shadow-[0px_7px_29px_0px_rgba(100,100,111,0.20)] outline outline-2 outline-offset-[-2px] outline-blue-100 flex flex-col items-start bg-white z-50">
             <div className="self-stretch px-6 py-4 bg-slate-100 rounded-t-2xl outline outline-2 outline-offset-[-2px] outline-blue-100 flex items-center">
                 <span className="text-gray-900 text-base font-bold">업로드한 파일</span>
             </div>
