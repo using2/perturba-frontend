@@ -73,10 +73,6 @@ export const subscribeToJob = (publicId: string, fileName: string) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_API_URL}/v1/jobs/${publicId}/events`;
     const eventSource = new EventSource(url, { withCredentials: true });
 
-    eventSource.onopen = () => {
-        console.log(`SSE connected for job: ${publicId}`);
-    };
-
     eventSource.addEventListener("job-created", (event) => {
         const data = JSON.parse(event.data);
         useJobStatusStore.getState().addJob({
@@ -130,8 +126,7 @@ export const subscribeToJob = (publicId: string, fileName: string) => {
         eventSources.delete(publicId);
     });
 
-    eventSource.onerror = (error) => {
-        console.error(`SSE error for job ${publicId}:`, error);
+    eventSource.onerror = () => {
         eventSource.close();
         eventSources.delete(publicId);
     };
