@@ -1,5 +1,3 @@
-
-
 import type {
     ApiResponse,
     JobListResponse,
