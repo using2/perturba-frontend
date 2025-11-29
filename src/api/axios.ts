@@ -37,6 +37,7 @@ axiosInstance.interceptors.response.use(
             setIsAuthenticated(false);
 
             alert("게스트 세션이 만료되어 초기화되었습니다.");
+            useAuthStore.getState().resetGuest();
             window.location.href = "/";
 
             return Promise.reject(error);

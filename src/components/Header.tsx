@@ -54,8 +54,8 @@ export default function Header() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const loginType = useAuthStore((state) => state.loginType);
     const setLoginType = useAuthStore((state) => state.setLoginType);
-    const resetGuest = useAuthStore((state) => state.resetGuest);
     const setGuestExpiresAt = useAuthStore((state) => state.setGuestExpiresAt);
+    const logout = useAuthStore((state) => state.logout);
 
     const isGuest = !isAuthenticated && loginType === "GUEST";
 
@@ -85,8 +85,7 @@ export default function Header() {
     const handleLogout = async () => {
         try {
             await apiLogout();
-            resetGuest();
-            handleMove("/", sidebarMenu[0].label);
+            logout();
         } catch (error) {
             console.error("Logout failed:", error);
         }
