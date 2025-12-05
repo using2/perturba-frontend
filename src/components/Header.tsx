@@ -55,6 +55,7 @@ export default function Header() {
     const loginType = useAuthStore((state) => state.loginType);
     const setLoginType = useAuthStore((state) => state.setLoginType);
     const logout = useAuthStore((state) => state.logout);
+    const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
     const isGuest = !isAuthenticated && loginType === "GUEST";
 
@@ -72,6 +73,7 @@ export default function Header() {
         try {
             const res = await getGuestSession();
             setLoginType("GUEST");
+            setIsAuthenticated(true);
             handleMove("/dashboard", sidebarMenu[0].label);
         } catch (error) {
             console.error("Guest login failed:", error);
