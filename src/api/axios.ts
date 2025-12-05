@@ -106,6 +106,7 @@ axiosInstance.interceptors.response.use(
 
                 const newAccessToken = res.data.data.access_token;
                 setAccessToken(newAccessToken);
+                setIsAuthenticated(true);
 
                 processQueue();
 

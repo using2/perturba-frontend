@@ -4,15 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { refreshAccessToken } from "@/api/authApi";
+import { useAuthStore } from "@/store/authStore";
 
 export default function OAuthCallbackPage() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
+    const { setIsAuthenticated } = useAuthStore();
 
     useEffect(() => {
         const handleOAuthCallback = async () => {
             try {
                 const token = await refreshAccessToken();
+                setIsAuthenticated(true);
 
                 if (token) {
                     router.replace("/dashboard");
