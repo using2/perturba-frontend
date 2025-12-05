@@ -20,6 +20,7 @@ export const refreshAccessToken = async () => {
 export async function checkAuthStatus(): Promise<boolean> {
     const {
         accessToken,
+        loginType,
         setAccessToken,
         setLoginType,
         setIsAuthenticated,
@@ -30,8 +31,6 @@ export async function checkAuthStatus(): Promise<boolean> {
         setIsAuthenticated(true);
         return true;
     }
-
-    const { loginType } = useAuthStore();
 
     const isGuest = loginType === "GUEST";
 

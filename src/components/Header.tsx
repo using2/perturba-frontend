@@ -71,7 +71,7 @@ export default function Header() {
 
     const handleGuestLogin = async () => {
         try {
-            const res = await getGuestSession();
+            await getGuestSession();
             setLoginType("GUEST");
             setIsAuthenticated(true);
             handleMove("/dashboard", sidebarMenu[0].label);
