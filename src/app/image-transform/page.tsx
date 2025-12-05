@@ -8,6 +8,7 @@ import { useImageUploadStore } from "@/store/imageUploadStore";
 import { useJobStatusStore, subscribeToJob } from "@/store/jobStatusStore";
 import type { Intensity } from "@/types/api";
 import { createJob } from "@/api/jobApi";
+import { useAuthStore } from "@/store/authStore";
 
 const strengthOptions = ["높음", "중간", "낮음"] as const;
 type Strength = typeof strengthOptions[number];
@@ -25,6 +26,8 @@ export default function ImageTransformPage() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showRecommendation, setShowRecommendation] = useState(false);
     const [creating, setCreating] = useState(false);
+    const { loginType } = useAuthStore();
+    const isGuest = loginType === "GUEST";
 
     const { uploadedImage, clearUploadedImage } = useImageUploadStore();
     const addJob = useJobStatusStore((state) => state.addJob);
@@ -63,7 +66,6 @@ export default function ImageTransformPage() {
                 clientChannel: "WEB",
                 requestMode: "ASYNC",
             });
-            console.log(response);
 
             if (response.ok && response.data) {
                 const { publicId } = response.data;
@@ -87,7 +89,8 @@ export default function ImageTransformPage() {
                 );
 
                 clearUploadedImage();
-                router.push("/dashboard/list");
+                if(isGuest) router.push("/dashboard/image-upload");
+                else router.push("/dashboard/list");
             } else {
                 throw new Error("작업 생성 실패");
             }
