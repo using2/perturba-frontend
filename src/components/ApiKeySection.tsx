@@ -214,12 +214,12 @@ export default function ApiKeySection() {
                             </label>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 flex items-center gap-2 px-4 py-3 bg-slate-100 rounded-lg font-mono text-xs md:text-sm">
-                                    <span className="flex-1 truncate">
+                                    <span className="flex-1 truncate text-gray-900">
                                         {apiKey.plaintext
                                             ? showKey
                                                 ? apiKey.plaintext
                                                 : maskKey(apiKey.plaintext)
-                                            : "pk_live_••••••••••••••••••••••••"}
+                                            : "••••••••••••••••••••••••"}
                                     </span>
                                     {apiKey.plaintext && (
                                         <button
@@ -362,7 +362,7 @@ function CreateApiKeyModal({ formData, setFormData, isCreating, onClose, onCreat
                             value={formData.label}
                             onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                             placeholder="예: Production Server"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full text-gray-900 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
                     </div>
 
@@ -377,7 +377,7 @@ function CreateApiKeyModal({ formData, setFormData, isCreating, onClose, onCreat
                                 onChange={(e) =>
                                     setFormData({ ...formData, ratePerMin: parseInt(e.target.value) || 0 })
                                 }
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="w-full text-gray-900 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                             />
                         </div>
                         <div>
@@ -390,7 +390,7 @@ function CreateApiKeyModal({ formData, setFormData, isCreating, onClose, onCreat
                                 onChange={(e) =>
                                     setFormData({ ...formData, dailyQuota: parseInt(e.target.value) || 0 })
                                 }
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="w-full text-gray-900 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                             />
                         </div>
                     </div>
@@ -405,7 +405,7 @@ function CreateApiKeyModal({ formData, setFormData, isCreating, onClose, onCreat
                             onChange={(e) =>
                                 setFormData({ ...formData, ttlHours: parseInt(e.target.value) || 0 })
                             }
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full text-gray-900 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
                     </div>
                 </div>

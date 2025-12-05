@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 🛡️ Perturba Frontend
 
-First, run the development server:
+**AI가 인식할 수 없는 비가시적 보호막으로 딥페이크와 무단 학습으로부터 이미지를 지키는 웹 서비스**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[데모 보기](#) · [문제 인식](#🎯-문제-인식) · [주요 기능](#🚀-주요-기능) · [기술 스택](#🛠-frontend-기술-스택)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+</div>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📋 목차
 
-## Learn More
+- [문제 인식](#🎯-문제-인식)
+- [솔루션](#💡-솔루션)
+- [주요 기능](#🚀-주요-기능)
+- [기술 스택](#🛠-frontend-기술-스택)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 문제 인식
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 딥페이크와 이미지 조작의 위협
 
-## Deploy on Vercel
+2024년 트럼프 대통령 피격 사건 당시, 경호원들의 표정을 인위적으로 바꾼 조작 이미지가 "모두가 웃고 있으니 사건은 자작극"이라는 가짜 뉴스에 활용되어 큰 사회적 혼란을 초래했습니다. 실제 사진과 거의 구분되지 않는 딥페이크 이미지는 사건의 진실을 왜곡하고, 사람들이 더 이상 눈앞의 화면을 신뢰하지 못하게 만듭니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 일상적인 위협으로 확산
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+이 문제는 유명 정치인만의 이야기가 아닙니다:
+
+- 친구들과 찍은 평범한 단체 사진에서 **내 표정만 교묘하게 '비웃는 표정'으로 변조**되어 학교폭력 가해자로 낙인찍힐 수 있습니다
+- 가지도 않은 장소, 하지도 않은 행동이 합성된 사진이 **"특정 범죄 현장에 있었다"는 루머**와 함께 확산될 수 있습니다
+- 개인의 얼굴이 **불법 콘텐츠에 무단으로 합성**되어 평판이 훼손될 수 있습니다
+
+**이미 퍼져버린 가짜 이미지를 삭제하고 해명하는 것만으로는 돌이킬 수 없는 피해가 발생합니다.**
+
+---
+
+## 💡 솔루션
+
+Perturba는 **"사건 이후의 해명"이 아니라, 딥페이크 이미지 생성 자체를 어렵게 만드는 선제적 방어 수단**을 제공합니다.
+
+### 작동 원리
+
+사용자가 이미지를 업로드하는 순간, **인간에게는 자연스럽게 보이지만 AI 모델에게는 치명적인 오류를 일으키는 보호 노이즈**를 입혀 무단 학습과 악의적 합성을 원천 차단합니다.
+
+---
+
+## 🚀 주요 기능
+
+### 1. 이미지 업로드 & 보호 설정
+
+<div align="center">
+  <img src="docs/images/upload.png" alt="이미지 업로드 화면" width="800"/>
+</div>
+
+- **파일 선택**을 통한 이미지 업로드
+- **SHA-256 해시 기반 중복 검증**으로 불필요한 재업로드 방지
+- **보호 강도 조절** (낮음/중간/높음) 기능
+
+### 2. 실시간 변환 상태 추적
+
+<div align="center">
+  <img src="docs/images/status.png" alt="변환 상태 추적" width="800"/>
+</div>
+
+- **Server-Sent Events (SSE)** 기반 실시간 작업 상태 업데이트
+- 여러 이미지의 변환 진행 상황을 동시에 모니터링
+- 변환 완료 시 **토스트 메시지** 표시
+- 새로고침 후에도 진행 중인 작업 자동 복원 (Zustand persist)
+
+### 3. 변환 결과 확인 & 다운로드
+
+<div align="center">
+  <img src="docs/images/result.png" alt="변환 결과 화면" width="800"/>
+</div>
+
+4가지 결과물을 탭으로 전환하며 확인 가능:
+- 원본 이미지
+- 보호 적용된 이미지
+- AI가 생성한 딥페이크 결과 (실패 확인용)
+- Perturbation 시각화 이미지
+
+**사용자 피드백 수집**: 변환 강도와 이미지 왜곡 정도를 평가받아 서비스 품질 개선
+
+### 4. 게스트/회원 접근 제어
+
+- **게스트 로그인**: 이미지 업로드 및 변환 체험 가능 (이력 저장 불가)
+- **OAuth 2.0 로그인**: Google 계정 연동으로 변환 이력 저장 및 관리
+- **라우팅 가드**: 게스트는 제한된 페이지만 접근 가능하도록 자동 리다이렉트
+
+### 5. 변환 이력 관리
+
+<div align="center">
+  <img src="docs/images/list.png" alt="이력 관리 화면" width="800"/>
+</div>
+
+- 페이지네이션 기반 변환 이력 조회
+- 특정 작업 클릭 시 상세 결과 페이지로 즉시 이동
+
+### 6. External API 문서 제공
+
+<div align="center">
+  <img src="docs/images/api-docs.png" alt="API 문서" width="800"/>
+</div>
+
+- **API Key 발급 및 관리**: 라벨, Rate Limit, 일일 할당량 설정
+- **RESTful API 스펙 문서**: 요청/응답 예시, 에러 코드 설명
+- **인터랙티브한 코드 블록**: 복사 기능 포함
+
+---
+
+## 🛠 Frontend 기술 스택
+
+### Core
+- **Next.js 15** (App Router) - React 기반 풀스택 프레임워크
+- **TypeScript** - 타입 안정성 보장
+- **Tailwind CSS** - 유틸리티 우선 스타일링
+
+### 상태 관리 & 데이터
+- **Zustand** - 경량 전역 상태 관리 (인증, 업로드, 작업 상태)
+- **Axios** - HTTP 클라이언트 (인터셉터 기반 토큰 관리)
+
+### 실시간 통신
+- **Server-Sent Events (SSE)** - 작업 상태 실시간 구독
+- **EventSource API** - 브라우저 네이티브 SSE 클라이언트
+
+### 차트 & 시각화
+- **Recharts** - 반응형 차트 라이브러리 (성능 지표 시각화)
+
+### 인증
+- **OAuth 2.0** - Google 소셜 로그인
+- **JWT** - Access Token 기반 인증
+- **Refresh Token** - 자동 토큰 갱신 (Axios 인터셉터)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { BiChevronLeft, BiShareAlt, BiDownload, BiChevronDown } from "react-icons/bi";
 import FeedbackModal from "@/components/FeedbackModal";
@@ -10,6 +10,15 @@ import type { JobResultResponse, FeedbackRequest } from "@/types/api";
 import { AxiosError } from "axios";
 
 const tabList = ["원본 이미지", "변환된 이미지", "AI 변경 요청 결과", "적용된 Perturbation 시각화"] as const;
+type JobDetailStatus = "PROGRESS" | "COMPLETED" | "FAILED" | null;
+
+const sendToast = (type: "success" | "error", message: string) => {
+    window.dispatchEvent(
+        new CustomEvent("job-toast", {
+            detail: { type, message },
+        })
+    );
+};
 
 export default function ResponsiveImageDetailPage() {
     const [tabIdx, setTabIdx] = useState(0);
@@ -18,20 +27,14 @@ export default function ResponsiveImageDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [jobResult, setJobResult] = useState<JobResultResponse | null>(null);
-    const [jobStatus, setJobStatus] = useState<"PROGRESS" | "COMPLETED" | "FAILED" | null>(null);
+    const [jobStatus, setJobStatus] = useState<JobDetailStatus>(null);
     const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
     const router = useRouter();
     const params = useParams();
     const publicId = params.id as string;
 
-    useEffect(() => {
-        if (publicId) {
-            loadJobResult();
-        }
-    }, [publicId]);
-
-    const loadJobResult = async () => {
+    const loadJobResult = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -59,163 +62,107 @@ export default function ResponsiveImageDetailPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [publicId]);
 
-    const handleGoBack = () => {
+    useEffect(() => {
+        if (publicId) {
+            loadJobResult();
+        }
+    }, [publicId, loadJobResult]);
+
+    const currentImageUrl = useMemo(() => {
+        if (!jobResult) return null;
+
+        const urlMap = {
+            0: jobResult.input?.url,
+            1: jobResult.perturbed?.url,
+            2: jobResult.deepfakeOutput?.url,
+            3: jobResult.perturbationVis?.url,
+        };
+
+        return urlMap[tabIdx as keyof typeof urlMap] || jobResult.input?.url || null;
+    }, [jobResult, tabIdx]);
+
+    const isTabProcessing = useCallback((idx: number) => {
+        if (idx === 0) return false;
+        if (jobStatus !== "COMPLETED") return true;
+
+        const resultMap = {
+            1: jobResult?.perturbed,
+            2: jobResult?.deepfakeOutput,
+            3: jobResult?.perturbationVis,
+        };
+
+        return !resultMap[idx as keyof typeof resultMap];
+    }, [jobStatus, jobResult]);
+
+    const fileName = useMemo(() => {
+        if (!jobResult) return "이미지";
+        return `작업 ${publicId.slice(0, 8)}...`;
+    }, [jobResult, publicId]);
+
+    const handleGoBack = useCallback(() => {
         router.push("/dashboard/list");
-    };
+    }, [router]);
 
-    const handleFeedbackSubmit = async (feedback: FeedbackRequest) => {
+    const handleFeedbackSubmit = useCallback(async (feedback: FeedbackRequest) => {
         try {
             setSubmittingFeedback(true);
             const response = await submitJobFeedback(publicId, feedback);
 
             if (response.ok) {
-                window.dispatchEvent(
-                    new CustomEvent("job-toast", {
-                        detail: {
-                            type: "success",
-                            message: "피드백이 성공적으로 제출되었습니다.",
-                        },
-                    })
-                );
+                sendToast("success", "피드백이 성공적으로 제출되었습니다.");
                 setShowFeedback(false);
             } else {
                 throw new Error("피드백 제출에 실패했습니다.");
             }
         } catch (err) {
             console.error("Failed to submit feedback:", err);
-            window.dispatchEvent(
-                new CustomEvent("job-toast", {
-                    detail: {
-                        type: "error",
-                        message: "피드백 제출에 실패했습니다. 다시 시도해주세요.",
-                    },
-                })
-            );
+            sendToast("error", "피드백 제출에 실패했습니다. 다시 시도해주세요.");
         } finally {
             setSubmittingFeedback(false);
         }
-    };
+    }, [publicId]);
 
-    const handleDownload = async () => {
-        if (!jobResult) return;
-
-        const imageUrl = getCurrentImageUrl();
-        if (!imageUrl) return;
+    const handleDownload = useCallback(async () => {
+        if (!currentImageUrl) return;
 
         try {
             const a = document.createElement("a");
-            a.href = imageUrl;
+            a.href = currentImageUrl;
             a.download = `perturba_${tabList[tabIdx].replace(/\s+/g, '_')}_${Date.now()}.jpg`;
             a.target = "_blank";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
 
-            window.dispatchEvent(
-                new CustomEvent("job-toast", {
-                    detail: {
-                        type: "success",
-                        message: "이미지 다운로드를 시작했습니다.",
-                    },
-                })
-            );
+            sendToast("success", "이미지 다운로드를 시작했습니다.");
         } catch (err) {
             console.error("Download failed:", err);
-            window.dispatchEvent(
-                new CustomEvent("job-toast", {
-                    detail: {
-                        type: "error",
-                        message: "이미지 다운로드에 실패했습니다.",
-                    },
-                })
-            );
+            sendToast("error", "이미지 다운로드에 실패했습니다.");
         }
-    };
+    }, [currentImageUrl, tabIdx]);
 
-    const handleShare = async () => {
+    const handleShare = useCallback(async () => {
         const shareUrl = window.location.href;
 
         try {
             if (navigator.share) {
                 await navigator.share({
-                    title: getFileName(),
+                    title: fileName,
                     text: "Perturba로 변환된 이미지를 확인해보세요!",
                     url: shareUrl,
                 });
-
-                window.dispatchEvent(
-                    new CustomEvent("job-toast", {
-                        detail: {
-                            type: "success",
-                            message: "공유되었습니다.",
-                        },
-                    })
-                );
+                sendToast("success", "공유되었습니다.");
             } else {
                 await navigator.clipboard.writeText(shareUrl);
-
-                window.dispatchEvent(
-                    new CustomEvent("job-toast", {
-                        detail: {
-                            type: "success",
-                            message: "링크가 클립보드에 복사되었습니다.",
-                        },
-                    })
-                );
+                sendToast("success", "링크가 클립보드에 복사되었습니다.");
             }
         } catch (err) {
             console.error("Share failed:", err);
-
-            window.dispatchEvent(
-                new CustomEvent("job-toast", {
-                    detail: {
-                        type: "error",
-                        message: "공유에 실패했습니다. URL을 직접 복사해주세요.",
-                    },
-                })
-            );
+            sendToast("error", "공유에 실패했습니다. URL을 직접 복사해주세요.");
         }
-    };
-
-    const getCurrentImageUrl = () => {
-        if (!jobResult) return null;
-
-        switch (tabIdx) {
-            case 0:
-                return jobResult.input?.url || null;
-            case 1:
-                return jobResult.perturbed?.url || null;
-            case 2:
-                return jobResult.deepfakeOutput?.url || null;
-            case 3:
-                return jobResult.perturbationVis?.url || null;
-            default:
-                return jobResult.input?.url || null;
-        }
-    };
-
-    const isTabProcessing = (idx: number) => {
-        if (idx === 0) return false;
-        if (jobStatus !== "COMPLETED") return true;
-
-        switch (idx) {
-            case 1:
-                return !jobResult?.perturbed;
-            case 2:
-                return !jobResult?.deepfakeOutput;
-            case 3:
-                return !jobResult?.perturbationVis;
-            default:
-                return false;
-        }
-    };
-
-    const getFileName = () => {
-        if (!jobResult) return "이미지";
-        return `작업 ${publicId.slice(0, 8)}...`;
-    };
+    }, [fileName]);
 
     if (loading) {
         return (
@@ -256,8 +203,6 @@ export default function ResponsiveImageDetailPage() {
         );
     }
 
-    const currentImageUrl = getCurrentImageUrl();
-
     return (
         <div className="flex-1 flex flex-col bg-white md:bg-gray-50 overflow-hidden">
             <div className="flex md:hidden items-center justify-between px-3 py-3 bg-white border-b border-gray-200">
@@ -265,7 +210,7 @@ export default function ResponsiveImageDetailPage() {
                     <BiChevronLeft size={24} className="text-gray-900" />
                 </button>
                 <h1 className="flex-1 text-center text-base font-semibold text-gray-900 truncate px-2">
-                    {getFileName()}
+                    {fileName}
                 </h1>
                 <button className="p-2" onClick={handleShare}>
                     <BiShareAlt size={24} className="text-gray-900" />
@@ -273,7 +218,7 @@ export default function ResponsiveImageDetailPage() {
             </div>
 
             <div className="hidden md:flex items-center justify-between px-8 py-10 bg-gray-50">
-                <h1 className="text-2xl font-bold text-gray-900">{getFileName()}</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{fileName}</h1>
                 <button className="p-2 rounded-full hover:bg-slate-200 transition" onClick={handleShare}>
                     <BiShareAlt size={24} className="text-gray-600" />
                 </button>
@@ -310,10 +255,10 @@ export default function ResponsiveImageDetailPage() {
                                     }}
                                     disabled={isTabProcessing(idx)}
                                     className={`w-full px-4 py-3 text-left text-sm font-medium flex items-center justify-between ${idx === tabIdx
-                                            ? "bg-indigo-50 text-blue-600"
-                                            : isTabProcessing(idx)
-                                                ? "text-gray-300 bg-gray-50 cursor-not-allowed"
-                                                : "text-gray-900 hover:bg-gray-50"
+                                        ? "bg-indigo-50 text-blue-600"
+                                        : isTabProcessing(idx)
+                                            ? "text-gray-300 bg-gray-50 cursor-not-allowed"
+                                            : "text-gray-900 hover:bg-gray-50"
                                         }`}
                                 >
                                     <span>{tab}</span>
@@ -338,10 +283,10 @@ export default function ResponsiveImageDetailPage() {
                                 onClick={() => setTabIdx(idx)}
                                 disabled={isTabProcessing(idx)}
                                 className={`flex-1 py-2 text-center text-sm font-medium transition-all relative ${tabIdx === idx
-                                        ? "text-indigo-700 border-b-2 border-indigo-600 font-semibold"
-                                        : isTabProcessing(idx)
-                                            ? "text-gray-300 cursor-not-allowed"
-                                            : "text-gray-400 hover:text-gray-600"
+                                    ? "text-indigo-700 border-b-2 border-indigo-600 font-semibold"
+                                    : isTabProcessing(idx)
+                                        ? "text-gray-300 cursor-not-allowed"
+                                        : "text-gray-400 hover:text-gray-600"
                                     }`}
                             >
                                 <span className="flex items-center justify-center gap-1.5">
