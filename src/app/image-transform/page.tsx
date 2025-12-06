@@ -243,7 +243,7 @@ export default function ImageTransformPage() {
 
                     <div className="flex-1 flex items-center justify-center px-4 sm:px-5 md:px-8 bg-gray-50">
                         {hasImage ? (
-                            <div className="w-full max-w-[160px] sm:max-w-[320px] md:max-w-xl bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-blue-200">
+                            <div className="w-full max-w-[160px] sm:max-w-[240px] bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-blue-200">
                                 <div className="relative aspect-square bg-gray-100">
                                     {processing ? (
                                         <div className="w-full h-full flex items-center justify-center">
