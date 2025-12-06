@@ -24,8 +24,6 @@ const strengthToIntensity: Record<Strength, Intensity> = {
 export default function ImageTransformPage() {
     const router = useRouter();
     const [selected, setSelected] = useState<Strength>("중간");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [currentAssetId, setCurrentAssetId] = useState<number | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showRecommendation, setShowRecommendation] = useState(false);
@@ -35,7 +33,7 @@ export default function ImageTransformPage() {
     const { loginType } = useAuthStore();
     const isGuest = loginType === "GUEST";
 
-    const { uploadedImage, clearUploadedImage } = useImageUploadStore();
+    const { uploadedImage, clearUploadedImage, setUploadedImage } = useImageUploadStore();
     const addJob = useJobStatusStore((state) => state.addJob);
 
     const hasCheckedInitialImage = useRef(false);
@@ -49,8 +47,6 @@ export default function ImageTransformPage() {
             return;
         }
 
-        setSelectedFile(uploadedImage.file);
-        setCurrentAssetId(uploadedImage.assetId);
         setPreviewUrl(uploadedImage.preview);
     }, [uploadedImage, router]);
 
@@ -94,9 +90,16 @@ export default function ImageTransformPage() {
             }
 
             const newPreview = URL.createObjectURL(processedFile);
-            setSelectedFile(processedFile);
-            setCurrentAssetId(result.assetId);
             setPreviewUrl(newPreview);
+
+            clearUploadedImage();
+            setUploadedImage({
+                fileName: processedFile.name,
+                fileType: processedFile.type,
+                fileSize: processedFile.size,
+                assetId: result.assetId,
+                preview: newPreview,
+            });
 
             window.dispatchEvent(
                 new CustomEvent("job-toast", {
@@ -124,14 +127,14 @@ export default function ImageTransformPage() {
     };
 
     const handleTransformImage = async () => {
-        if (!currentAssetId || !selectedFile || creating) return;
+        if (!uploadedImage || creating) return;
 
         try {
             setCreating(true);
 
             const intensity = strengthToIntensity[selected];
             const response = await createJob({
-                inputAssetId: currentAssetId,
+                inputAssetId: uploadedImage.assetId,
                 intensity,
                 notifyVia: "NONE",
                 clientChannel: "WEB",
@@ -143,18 +146,18 @@ export default function ImageTransformPage() {
 
                 addJob({
                     publicId,
-                    fileName: selectedFile.name,
+                    fileName: uploadedImage.fileName,
                     status: "PROGRESS",
                     createdAt: new Date().toISOString(),
                 });
 
-                subscribeToJob(publicId, selectedFile.name);
+                subscribeToJob(publicId, uploadedImage.fileName);
 
                 window.dispatchEvent(
                     new CustomEvent("job-toast", {
                         detail: {
                             type: "success",
-                            message: `${selectedFile.name} 변환이 시작되었습니다.`,
+                            message: `${uploadedImage.fileName} 변환이 시작되었습니다.`,
                         },
                     })
                 );
@@ -200,12 +203,11 @@ export default function ImageTransformPage() {
         if (previewUrl) {
             URL.revokeObjectURL(previewUrl);
         }
-        setSelectedFile(null);
-        setCurrentAssetId(null);
         setPreviewUrl(null);
+        clearUploadedImage();
     };
 
-    const hasImage = selectedFile && currentAssetId && previewUrl;
+    const hasImage = uploadedImage && previewUrl;
 
     const getProcessingMessage = () => {
         if (processing) {
@@ -271,10 +273,10 @@ export default function ImageTransformPage() {
                                         현재 업로드된 이미지:
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-900 font-semibold truncate">
-                                        {selectedFile.name}
+                                        {uploadedImage.fileName}
                                     </p>
                                     <p className="text-xs text-gray-500 mt-1">
-                                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                                        {(uploadedImage.fileSize / 1024 / 1024).toFixed(2)} MB
                                     </p>
                                 </div>
                             </div>
