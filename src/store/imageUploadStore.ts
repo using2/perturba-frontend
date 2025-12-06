@@ -1,7 +1,10 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UploadedImage {
-    file: File;
+    fileName: string;
+    fileType: string;
+    fileSize: number;
     assetId: number;
     preview: string;
 }
@@ -12,10 +15,18 @@ interface ImageUploadState {
     clearUploadedImage: () => void;
 }
 
-export const useImageUploadStore = create<ImageUploadState>((set) => ({
-    uploadedImage: null,
+export const useImageUploadStore = create<ImageUploadState>()(
+    persist(
+        (set) => ({
+            uploadedImage: null,
 
-    setUploadedImage: (image) => set({ uploadedImage: image }),
+            setUploadedImage: (image) => set({ uploadedImage: image }),
 
-    clearUploadedImage: () => set({ uploadedImage: null }),
-}));
+            clearUploadedImage: () => set({ uploadedImage: null }),
+        }),
+        {
+            name: "image-upload-storage",
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);

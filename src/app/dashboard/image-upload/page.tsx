@@ -49,7 +49,9 @@ export default function ImageUploadPage() {
             const preview = URL.createObjectURL(processedFile);
 
             setUploadedImage({
-                file: processedFile,
+                fileName: processedFile.name,
+                fileType: processedFile.type,
+                fileSize: processedFile.size,
                 assetId: result.assetId,
                 preview,
             });
