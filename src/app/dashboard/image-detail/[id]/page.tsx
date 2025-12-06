@@ -128,35 +128,28 @@ export default function ResponsiveImageDetailPage() {
         if (!currentImageUrl) return;
 
         try {
-            const url = `${currentImageUrl}${currentImageUrl.includes("?") ? "&" : "?"
-                }no-cache=${Date.now()}`;
+            const link = document.createElement('a');
+            link.href = currentImageUrl;
+            link.download = `perturba_${tabList[tabIdx].replace(/\s+/g, "_")}_${Date.now()}.jpg`;
 
-            const res = await fetch(url, {
-                method: "GET",
-                mode: "cors",
-                cache: "no-store",
-            });
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
 
-            if (!res.ok) {
-                throw new Error("Failed to fetch image");
-            }
-
-            const blob = await res.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = blobUrl;
-            a.download = `perturba_${tabList[tabIdx].replace(/\s+/g, "_")}_${Date.now()}.jpg`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            window.URL.revokeObjectURL(blobUrl);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
             sendToast("success", "이미지 다운로드를 시작했습니다.");
         } catch (err) {
             console.error("Download failed:", err);
-            sendToast("error", "이미지 다운로드에 실패했습니다.");
+
+            try {
+                window.open(currentImageUrl, '_blank', 'noopener,noreferrer');
+                sendToast("success", "새 탭에서 이미지를 열었습니다. 우클릭 후 '다른 이름으로 저장'을 선택해주세요.");
+            } catch (fallbackErr) {
+                console.error("Fallback failed:", fallbackErr);
+                sendToast("error", "이미지를 열 수 없습니다. URL을 복사하시겠습니까?");
+            }
         }
     }, [currentImageUrl, tabIdx]);
 
