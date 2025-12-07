@@ -3,10 +3,10 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
 const chartData = [
-    { name: 'Perturba', value: 0.945 },
-    { name: 'Model A', value: 0.87 },
-    { name: 'Model B', value: 0.78 },
-    { name: 'Model C', value: 0.70 }
+    { name: "Perturba", value: 0.945 },
+    { name: "기존 방법 A", value: 0.87 },
+    { name: "기존 방법 B", value: 0.78 },
+    { name: "기존 방법 C", value: 0.70 },
 ];
 
 export default function ResponsivePerformancePage() {
@@ -26,13 +26,17 @@ export default function ResponsivePerformancePage() {
                                 SSIM (Structural Similarity Index)이란?
                             </h2>
                             <p className="text-base font-medium text-gray-700 mb-3 leading-relaxed">
-                                SSIM은 원본 이미지와 변환된 이미지의 구조적 유사도를 측정하는 지표입니다.
-                                1에 가까울수록 육안으로 구별하기 어려운 고품질 이미지를 의미합니다.
+                                SSIM은 원본 이미지와 변환된 이미지의 구조적 유사도를 측정하는
+                                지표입니다. 1에 가까울수록 육안으로 구별하기 어려운 고품질
+                                이미지를 의미합니다.
                             </p>
                             <p className="text-base font-medium text-gray-700 leading-relaxed">
-                                Perturba는{' '}
-                                <span className="text-blue-600 font-bold">0.945의 높은 SSIM 점수</span>
-                                를 기록하여 육안으로는 거의 차이가 없으면서도 AI 모델의 인식을 효과적으로 교란시킵니다.
+                                Perturba는{" "}
+                                <span className="text-blue-600 font-bold">
+                                    0.945의 높은 SSIM 점수
+                                </span>
+                                를 기록하여 육안으로는 거의 차이가 없으면서도 AI 모델의 인식을
+                                효과적으로 교란시킵니다.
                             </p>
                         </div>
                     </section>
@@ -45,25 +49,51 @@ export default function ResponsivePerformancePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 md:gap-6">
                             <div className="bg-blue-100 md:bg-blue-400/40 md:border md:border-blue-200 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6">
-                                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <svg
+                                        className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
                                     </svg>
                                 </div>
-                                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2">최고 수준의 품질</h3>
+                                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2">
+                                    높은 수준의 품질
+                                </h3>
                                 <p className="text-xs sm:text-sm md:text-base font-medium text-gray-700">
-                                    업계 최고 SSIM 0.945로 육안 구별 불가능
+                                    SSIM 0.945로 육안 구별이 거의 불가능한 수준의 이미지 품질을
+                                    제공합니다.
                                 </p>
                             </div>
 
                             <div className="bg-green-100 md:bg-green-600/40 md:border md:border-green-200 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center mb-3 sm:mb-4 md:mb-6">
-                                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    <svg
+                                        className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                                        />
                                     </svg>
                                 </div>
-                                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2">빠른 처리 속도</h3>
+                                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2">
+                                    빠른 처리 속도
+                                </h3>
                                 <p className="text-xs sm:text-sm md:text-base font-medium text-gray-700">
-                                    평균 2.3초 이내 변환 완료
+                                    평균 15초 이내 변환을 완료하여 실사용 환경에서도 충분한
+                                    응답성을 제공합니다.
                                 </p>
                             </div>
                         </div>
@@ -75,13 +105,17 @@ export default function ResponsivePerformancePage() {
                                 SSIM (Structural Similarity Index)이란?
                             </h2>
                             <p className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3 leading-relaxed">
-                                SSIM은 원본 이미지와 변환된 이미지의 구조적 유사도를 측정하는 지표입니다.
-                                1에 가까울수록 육안으로 구별하기 어려운 고품질 이미지를 의미합니다.
+                                SSIM은 원본 이미지와 변환된 이미지의 구조적 유사도를 측정하는
+                                지표입니다. 1에 가까울수록 육안으로 구별하기 어려운 고품질
+                                이미지를 의미합니다.
                             </p>
                             <p className="text-xs sm:text-sm font-medium text-gray-700 leading-relaxed">
-                                Perturba는{' '}
-                                <span className="text-blue-600 font-bold">0.945의 높은 SSIM 점수</span>
-                                를 기록하여 육안으로는 거의 차이가 없으면서도 AI 모델의 인식을 효과적으로 교란시킵니다.
+                                Perturba는{" "}
+                                <span className="text-blue-600 font-bold">
+                                    0.945의 높은 SSIM 점수
+                                </span>
+                                를 기록하여 육안으로는 거의 차이가 없으면서도 AI 모델의 인식을
+                                효과적으로 교란시킵니다.
                             </p>
                         </div>
                     </section>
@@ -92,7 +126,11 @@ export default function ResponsivePerformancePage() {
                         </h2>
                         <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm md:shadow-lg border-2 border-indigo-100 p-3 sm:p-5 md:p-8">
                             <div className="mb-3 sm:mb-4 md:mb-6">
-                                <ResponsiveContainer width="100%" height={200} className="sm:h-[250px] md:h-[300px]">
+                                <ResponsiveContainer
+                                    width="100%"
+                                    height={200}
+                                    className="sm:h-[250px] md:h-[300px]"
+                                >
                                     <BarChart
                                         data={chartData}
                                         margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
@@ -100,16 +138,16 @@ export default function ResponsivePerformancePage() {
                                         <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
                                         <XAxis
                                             dataKey="name"
-                                            tick={{ fill: '#6b7280', fontSize: 10 }}
+                                            tick={{ fill: "#6b7280", fontSize: 10 }}
                                             className="sm:text-xs md:text-sm"
-                                            axisLine={{ stroke: '#6b7280' }}
+                                            axisLine={{ stroke: "#6b7280" }}
                                         />
                                         <YAxis
                                             domain={[0, 1]}
                                             ticks={[0, 0.25, 0.5, 0.75, 1]}
-                                            tick={{ fill: '#6b7280', fontSize: 10 }}
+                                            tick={{ fill: "#6b7280", fontSize: 10 }}
                                             className="sm:text-xs md:text-sm"
-                                            axisLine={{ stroke: '#6b7280' }}
+                                            axisLine={{ stroke: "#6b7280" }}
                                         />
                                         <Bar
                                             dataKey="value"
@@ -126,8 +164,10 @@ export default function ResponsivePerformancePage() {
                             </div>
 
                             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 md:mb-6">
-                                <div className="w-2.5 h-2 sm:w-3 sm:h-2 md:w-3.5 md:h-2.5 bg-blue-500"></div>
-                                <span className="text-xs sm:text-sm md:text-base text-blue-500 font-medium">SSIM (↑)</span>
+                                <div className="w-2.5 h-2 sm:w-3 sm:h-2 md:w-3.5 md:h-2.5 bg-blue-500" />
+                                <span className="text-xs sm:text-sm md:text-base text-blue-500 font-medium">
+                                    SSIM (↑)
+                                </span>
                             </div>
 
                             <div className="bg-blue-50 rounded-lg p-2.5 sm:p-3 md:p-4">
@@ -135,7 +175,11 @@ export default function ResponsivePerformancePage() {
                                     SSIM (Structural Similarity)
                                 </h3>
                                 <p className="text-[10px] sm:text-xs md:text-base font-medium text-blue-700">
-                                    값이 높을수록 원본과 시각적으로 유사한 고품질 이미지
+                                    값이 높을수록 원본과 시각적으로 더 유사한 고품질 이미지를
+                                    의미합니다.
+                                </p>
+                                <p className="mt-1 text-[9px] sm:text-[10px] md:text-xs text-blue-500">
+                                    ※ 기존 방법의 SSIM 값은 설명을 위한 예시 값으로, 동일 조건에서 측정한 실제 수치는 아닙니다.
                                 </p>
                             </div>
                         </div>
