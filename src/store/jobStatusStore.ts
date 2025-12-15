@@ -31,7 +31,7 @@ class EventSourceManager {
         }
 
         const url = `${process.env.NEXT_PUBLIC_SERVER_API_URL}/v1/jobs/${publicId}/events`;
-        const eventSource = new EventSource(url, { withCredentials: true });
+        const eventSource = new EventSource(url);
 
         this.setupEventHandlers(eventSource, publicId, fileName, store);
 
